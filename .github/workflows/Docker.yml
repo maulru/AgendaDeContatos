@@ -84,13 +84,13 @@ jobs:
         run: dotnet ef database update --project WebApp/Infrastructure --connection "Server=localhost,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
     
       - name: Populando o banco de dados com os estados do Brasil
-        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i Infrastructure/Scripts/SQL/InsertEstados.sql
+        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i WebApp/Infrastructure/Scripts/SQL/InsertEstados.sql
 
       - name: Populando o banco de dados com as regiões do Brasil
-        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i Infrastructure/Scripts/SQL/InsertRegioes.sql
+        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i WebApp/Infrastructure/Scripts/SQL/InsertRegioes.sql
 
       - name: Populando o banco de dados com os DDDs
-        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i Infrastructure/Scripts/SQL/InsertDDDs.sql
+        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i WebApp/Infrastructure/Scripts/SQL/InsertDDDs.sql
 
       - name: Executando testes unitários
         env:
