@@ -81,7 +81,7 @@ jobs:
         run: sleep 30
 
       - name: Aplicando a migration do Entity Framework
-        run: dotnet ef database update --project Infrastructure --connection "Server=localhost,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
+        run: dotnet ef database update --project WebApp/Infrastructure --connection "Server=localhost,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
     
       - name: Populando o banco de dados com os estados do Brasil
         run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i Infrastructure/Scripts/SQL/InsertEstados.sql
