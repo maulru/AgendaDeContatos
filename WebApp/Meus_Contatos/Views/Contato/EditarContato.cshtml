@@ -1,0 +1,83 @@
+﻿@model Core.Input.ContatoInput
+
+@{
+    ViewData["Title"] = "Editar Contato";
+}
+
+<div>
+    <div class="text-center" style="margin-bottom: 150px;">
+        <h1 class="display-4">Editar Contato</h1>
+    </div>
+
+    <form style="margin-left: 150px" asp-action="EditarContato" method="post" asp-controller="Contato">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+        <p class="fs-5 mb-4">Edite as informações do contato:</p>
+
+        <div class="col-md-10">
+            <div class="mb-3">
+                <label for="Nome" class="form-label"><b>Nome</b></label>
+                <input type="text" placeholder="" class="form-control" id="Nome" name="Nome" maxlength="100" value="@Model.Nome" required>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="mb-3">
+                <label for="Email" class="form-label"><b>E-mail</b></label>
+                <input type="email" placeholder="exemplo@email.com.br" class="form-control" id="Email" name="Email" maxlength="100" value="@Model.Email" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1">
+                <div class="mb-3">
+                    <label for="Ddd" class="form-label"><b>DDD</b></label>
+                    <input type="text" placeholder="(00)" class="form-control" id="Ddd" name="NumeroDDD" value="@Model.NumeroDDD" required>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="mb-3">
+                    <label for="Telefone" class="form-label"><b>Telefone</b></label>
+                    <input type="text" placeholder="00000-0000" class="form-control" id="Telefone" name="NumeroTelefone" value="@Model.NumeroTelefone" required>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Salvar</button>
+    </form>
+</div>
+
+<div id="modalContainer"></div>
+
+<!-- Inclui o modal de confirmação de alteração -->
+@Html.Partial("Components/UserChangedModal")
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Redireciona para a página Index ao clicar no botão "Voltar"
+            $("#modalContainer").on("click", "#backButton", function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+            $("form").submit(function (event) {
+                event.preventDefault();
+
+                var form = $(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#modalContainer').load('@Url.Action("LoadUserChangedModal", "Contato")', function () {
+                                $('#userChangedModal').modal('show');
+                            });
+                        } else {
+                            alert('Erro: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Ocorreu um erro ao alterar o contato.');
+                    }
+                });
+            });
+        });
+
+    </script>
+}

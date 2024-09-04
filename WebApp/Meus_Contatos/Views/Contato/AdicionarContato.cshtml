@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Adicionar Contato";
+}
+
+@model Core.Input.ContatoInput
+
+<div>
+    <div class="text-center" style="margin-bottom: 150px;">
+        <h1 class="display-4">Novo contato</h1>
+    </div>
+
+    <form style="margin-left: 150px" asp-action="AdicionarContato" method="post" asp-controller="Contato">
+        <p class="fs-5 mb-4">Digite as informações necessárias para cadastrar um novo contato:</p>
+
+        <div class="col-md-10">
+            <div class="mb-3">
+                <label for="Nome" class="form-label"><b>Nome</b></label>
+                <input type="text" placeholder="" class="form-control" id="Nome" name="Nome" maxlength="100" required>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="mb-3">
+                <label for="Email" class="form-label"><b>E-mail</b></label>
+                <input type="email" placeholder="exemplo@email.com.br" class="form-control" id="Email" name="Email" maxlength="100" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1">
+                <div class="mb-3">
+                    <label for="Ddd" class="form-label"><b>DDD</b></label>
+                    <input type="text" placeholder="(00)" class="form-control" id="Ddd" name="NumeroDDD" required>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="mb-3">
+                    <label for="Telefone" class="form-label"><b>Telefone</b></label>
+                    <input type="text" placeholder="00000-0000" class="form-control" id="Telefone" name="NumeroTelefone" required>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Adicionar</button>
+    </form>
+</div>
+
+<div id="modalContainer"></div>
+
+<!-- Inclui o modal de confirmação de cadastro -->
+@Html.Partial("Components/UserCreatedModal")
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Redireciona para a página Index ao clicar no botão "Voltar"
+            $("#modalContainer").on("click", "#backButton", function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+
+            // Submissão do formulário via AJAX
+            $("form").submit(function (event) {
+                event.preventDefault();
+
+                var form = $(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#modalContainer').load('@Url.Action("LoadUserCreatedModal", "Contato")', function () {
+                                $('#userCreatedModal').modal('show');
+                            });
+                        } else {
+                            alert('Erro: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Ocorreu um erro ao cadastrar o contato.');
+                    }
+                });
+            });
+        });
+    </script>
+}
