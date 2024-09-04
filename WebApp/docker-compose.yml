@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "M@sterk3y"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+
+  meus_contatos:
+    build:
+      context: .
+      dockerfile: Meus_Contatos/Dockerfile
+    ports:
+      - "8080:8080"
+    image: trickfx/meuscontatos:latest
+    depends_on:
+      - sqlserver
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=host.docker.internal,1433;Database=contatos;User Id=sa;Password=M@sterk3y;"
+      ASPNETCORE_URLS: "http://host.docker.internal:8080"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ../Prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - ../Grafana/Provisioning:/etc/grafana/provisioning
+      - ../Grafana/Dashboards:/var/lib/grafana/dashboards
+
+volumes:
+  sqlserverdata:
