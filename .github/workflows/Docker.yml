@@ -20,7 +20,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Realizando a restauração de pacotes Nuget
-        run: dotnet restore
+        run: dotnet restore WebApp/Meus_Contatos.sln
 
       - name: Realizando o build da aplicação
         run: dotnet build --no-restore --configuration Release
