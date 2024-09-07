@@ -64,6 +64,14 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "Login",
+    pattern: "{controller=Conta}/{action=Login}");
+
+app.MapControllerRoute(
+    name: "Register",
+    pattern: "{controller=Conta}/{action=Registrar}");
+
 ApplyMigrations(app);
 app.Run();
 
