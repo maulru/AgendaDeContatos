@@ -41,6 +41,12 @@ services:
     volumes:
       - ../Grafana/Provisioning:/etc/grafana/provisioning
       - ../Grafana/Dashboards:/var/lib/grafana/dashboards
+  
+  rabbitmq:
+    image: masstransit/rabbitmq
+    ports:
+      -  "5672:5672"
+      -  "15672:15672"
 
 volumes:
   sqlserverdata:

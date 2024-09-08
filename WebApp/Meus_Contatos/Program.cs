@@ -62,14 +62,14 @@ app.UseEndpoints(endpoints =>
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Conta}/{action=Login}");
 
 app.MapControllerRoute(
     name: "Login",
     pattern: "{controller=Conta}/{action=Login}");
 
 app.MapControllerRoute(
-    name: "Register",
+    name: "Registrar",
     pattern: "{controller=Conta}/{action=Registrar}");
 
 ApplyMigrations(app);
