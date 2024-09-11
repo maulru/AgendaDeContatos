@@ -4,36 +4,43 @@
     ViewBag.Title = "Cadastro de Usuário";
 }
 
-<h2>Cadastro de Usuário</h2>
-
+<div class="text-center" style="margin-bottom: 150px;">
+    <h1 class="display-4">Cadastro de Usuário</h1>
+</div>
+<p class="fs-5 mb-4">Preencha os dados necessários para realizar o cadastro:</p>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Username)
-        @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+    <div class="mt-10">
+        <div class="form-group mb-3">
+            <b>@Html.LabelFor(m => m.Username)</b>
+            <b>@Html.TextBoxFor(m => m.Username, new { @class = "form-control", @required = "required" })</b>
+        </div>
+
+        <div class="form-group mb-3">
+            <b>@Html.LabelFor(m => m.Password)</b>
+            <b>@Html.PasswordFor(m => m.Password, new { @class = "form-control", @required = "required" })</b>
+        </div>
+
+        <div class="form-group mb-3">
+            <b>@Html.LabelFor(m => m.ConfirmPassword)</b>
+            <b>@Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @required = "required" })</b>
+        </div>
+
+        <div class="form-group mb-3">
+            <b>@Html.LabelFor(m => m.Email)</b>
+            <b>@Html.TextBoxFor(m => m.Email, new { @class = "form-control", @required = "required" })</b>
+        </div>
+
+        <div class="form-group mb-3">
+            <b>@Html.LabelFor(m => m.DateOfBirth)</b>
+            <b>@Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", @required = "required" })</b>
+        </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password)
-        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+    <div class="mt-2">
+        <a href="@Url.Action("Login", "Conta")" class="btn btn-secondary">Voltar</a>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
     </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword)
-        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email)
-        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.DateOfBirth)
-        @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-    </div>
-
-    <button type="submit" class="btn btn-primary">Cadastrar</button>
 }

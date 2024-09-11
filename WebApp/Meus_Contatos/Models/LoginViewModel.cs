@@ -4,13 +4,13 @@ namespace Meus_Contatos.Models
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "O campo usuário é obrigatório.")]
         [Display(Name = "Usuário")]
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo senha é obrigatório")]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
-        public string Password { get; set; }
+        public required string Password { get; set; }
     }
 }

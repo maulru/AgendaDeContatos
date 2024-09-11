@@ -1,31 +1,30 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Meus_Contatos.Models
 {
     public class RegistrarViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "O campo usuário é obrigatório.")]
         [Display(Name = "Usuário")]
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo senha é obrigatório.")]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
-        public string Password { get; set; }
+        public required string Password { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "É necessário realizar a confirmação da senha.")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirmar Senha")]
         [Compare("Password", ErrorMessage = "As senhas não coincidem.")]
-        public string ConfirmPassword { get; set; }
+        public required string ConfirmPassword { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo e-mail é obrigatório.")]
         [DataType(DataType.EmailAddress)]
         [Display(Name = "E-mail")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo data de nascimento é obrigatório.")]
         [Display(Name = "Data de Nascimento")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
