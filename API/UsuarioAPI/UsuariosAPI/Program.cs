@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UsuariosAPI.Authorization;
+using UsuariosAPI.Consumer;
 using UsuariosAPI.Data;
 using UsuariosAPI.Models;
 using UsuariosAPI.Services;
@@ -35,6 +36,7 @@ builder.Services.AddSingleton<IAuthorizationHandler, IdadeAuthorization>();
 
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TokenService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -67,6 +69,7 @@ builder.Services.AddAuthorization(options =>
         );
 });
 
+builder.Services.AddHostedService<RabbitMQConsumerService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,9 +81,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 app.MapControllers();
 
 app.Run();

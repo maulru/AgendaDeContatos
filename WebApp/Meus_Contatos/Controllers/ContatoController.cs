@@ -2,6 +2,7 @@
 using Core.Input;
 using Core.Repository;
 using Infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -58,6 +59,7 @@ namespace Meus_Contatos.Controllers
         /// Retornar View
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public IActionResult AdicionarContato()
         {
             return View();
@@ -68,6 +70,7 @@ namespace Meus_Contatos.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         public JsonResult AdicionarContato(ContatoInput input)
         {
@@ -118,6 +121,7 @@ namespace Meus_Contatos.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         public IActionResult EditarContato(int id)
         {
             var contato = _contatoRepository.ObterPorId(id);
@@ -144,6 +148,7 @@ namespace Meus_Contatos.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         public JsonResult EditarContato(ContatoInput input)
         {
@@ -202,6 +207,7 @@ namespace Meus_Contatos.Controllers
         /// <param name="regiao"></param>
         /// <param name="ddd"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         public JsonResult ContatosFiltrados(string regiao, string ddd)
         {
@@ -229,6 +235,7 @@ namespace Meus_Contatos.Controllers
         /// Método para carregar o modal na tela de cadastro de usuário
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public IActionResult LoadUserCreatedModal() //ActionResult para exibir o ModalDialog
         {
             return PartialView("Components/UserCreatedModal");
@@ -238,6 +245,7 @@ namespace Meus_Contatos.Controllers
         /// Método para carregar o modal na tela de edição de usuário
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public IActionResult LoadUserChangedModal() //ActionResult para exibir o ModalDialog
         {
             return PartialView("Components/UserChangedModal");

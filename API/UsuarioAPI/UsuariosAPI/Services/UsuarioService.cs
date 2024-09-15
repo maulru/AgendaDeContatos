@@ -39,23 +39,25 @@ namespace UsuariosAPI.Services
 
         public async Task<string> Login(LoginUsuarioDto dto)
         {
-            var resultado = await _signInManager.PasswordSignInAsync(dto.Username, dto.Password, false, false);
+            var usuario = await _userManager.FindByNameAsync(dto.Username);
 
+            if (usuario == null)
+            {
+                throw new ApplicationException("Usuário não encontrado!");
+            }
 
-            if (!resultado.Succeeded)
+            var isPasswordValid = await _userManager.CheckPasswordAsync(usuario, dto.Password);
+
+            if (!isPasswordValid)
             {
                 throw new ApplicationException("Usuário não autenticado!");
             }
 
-            var usuario = _signInManager
-                .UserManager
-                .Users
-                .FirstOrDefault(user => user.NormalizedUserName == 
-                dto.Username.ToUpper());
 
             var token = _tokenService.GenerateToken(usuario);
 
             return token;
         }
+
     }
 }

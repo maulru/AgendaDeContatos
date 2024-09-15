@@ -1,12 +1,13 @@
 ﻿using System;
+using Infrastructure.Services;
 using Meus_Contatos.Models;
-using Microsoft.AspNetCore.Mvc; // Referência ao modelo de usuários (você precisará criar)
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json; 
 
 namespace Meus_Contatos.Controllers
 {
     public class ContaController : Controller
     {
-        // GET: Login
         public IActionResult Login()
         {
             return View();
@@ -17,8 +18,18 @@ namespace Meus_Contatos.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Lógica de autenticação aqui
-                return RedirectToAction("Index", "Home");
+                
+                using (var rabbitMQClient = new RabbitMQClient())
+                {
+                    var loginRequest = JsonConvert.SerializeObject(model);
+                    var token = rabbitMQClient.Call(loginRequest);
+
+                    HttpContext.Response.Cookies.Append("JWTToken", token);
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+            
             }
 
             return View(model);

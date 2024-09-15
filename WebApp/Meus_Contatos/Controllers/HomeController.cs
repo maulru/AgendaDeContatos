@@ -1,11 +1,13 @@
 using Core.Repository;
 using Meus_Contatos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prometheus;
 using System.Diagnostics;
 
 namespace Meus_Contatos.Controllers
 {
+
     public class HomeController : Controller
     {
         #region Propriedades
@@ -33,6 +35,7 @@ namespace Meus_Contatos.Controllers
             _contatoRepository = contatoRepository;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             using (RequestDurationHome.NewTimer())
@@ -44,7 +47,7 @@ namespace Meus_Contatos.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost]
         public JsonResult ExcluirContato(int id)
         {
