@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -7,19 +8,19 @@ using UsuariosAPI.Services;
 
 namespace UsuariosAPI.Consumer
 {
-    public class RabbitMQConsumer
+    public class RabbitMQAddUserConsumer
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
         private readonly UsuarioService _usuarioService;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public RabbitMQConsumer(UsuarioService cadastroService, IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQAddUserConsumer(UsuarioService cadastroService, IServiceScopeFactory serviceScopeFactory)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" }; 
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "auth_queue",
+            _channel.QueueDeclare(queue: "addUser_queue",
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
@@ -35,23 +36,33 @@ namespace UsuariosAPI.Consumer
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-
-                var loginModel = JsonConvert.DeserializeObject<LoginUsuarioDto>(message);
+                string responseMessage = string.Empty;
+                var userModel = JsonConvert.DeserializeObject<CreateUsuarioDto>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
+
                     var usuarioService = scope.ServiceProvider.GetRequiredService<UsuarioService>();
-                    var token = await usuarioService.Login(loginModel);
+                    IdentityResult result = await usuarioService.CadastraAsync(userModel);
 
                     var replyProps = _channel.CreateBasicProperties();
                     replyProps.CorrelationId = ea.BasicProperties.CorrelationId;
 
-                    var responseBytes = Encoding.UTF8.GetBytes(token);
+                    if (result.Succeeded)
+                    {
+                        responseMessage = "Usuário cadastrado com sucesso!";
+                    }
+                    else
+                    {
+                        responseMessage = result.Errors.Select(e => e.Description).ToString();
+                    }
+
+                    var responseBytes = Encoding.UTF8.GetBytes(responseMessage);
                     _channel.BasicPublish(exchange: "", routingKey: ea.BasicProperties.ReplyTo, basicProperties: replyProps, body: responseBytes);
                 }
             };
 
-            _channel.BasicConsume(queue: "auth_queue", autoAck: true, consumer: consumer);
+            _channel.BasicConsume(queue: "addUser_queue", autoAck: true, consumer: consumer);
         }
 
 

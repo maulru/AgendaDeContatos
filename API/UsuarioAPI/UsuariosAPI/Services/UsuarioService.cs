@@ -23,18 +23,19 @@ namespace UsuariosAPI.Services
             _tokenService = tokenService;
         }
 
-        public async Task CadastraAsync(CreateUsuarioDto dto)
+        public async Task<IdentityResult> CadastraAsync(CreateUsuarioDto dto)
         {
             Usuario usuario = _mapper.Map<Usuario>
                (dto);
 
             IdentityResult resultado = await _userManager.CreateAsync(usuario, dto.Password);
 
-            if (resultado.Succeeded)
+            if (!resultado.Succeeded)
             {
-                throw new ApplicationException("Falha ao cadastrar usuário!");
+                return IdentityResult.Failed(new IdentityError { Description = "Ocorreu um erro ao cadastrar o usuário."});
             }
-            
+
+            return resultado;  
         }
 
         public async Task<string> Login(LoginUsuarioDto dto)

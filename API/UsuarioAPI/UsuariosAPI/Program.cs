@@ -70,16 +70,26 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddHostedService<RabbitMQConsumerService>();
+builder.Services.AddHostedService<RabbitMQAddUserCS>();
 var app = builder.Build();
+
+// Aplicando migration após inicialização da aplicação.
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<UsuarioDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();

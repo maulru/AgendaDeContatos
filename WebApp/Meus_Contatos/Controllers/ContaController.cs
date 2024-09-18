@@ -19,7 +19,7 @@ namespace Meus_Contatos.Controllers
             if (ModelState.IsValid)
             {
                 
-                using (var rabbitMQClient = new RabbitMQClient())
+                using (var rabbitMQClient = new RabbitMQClient("auth_queue"))
                 {
                     var loginRequest = JsonConvert.SerializeObject(model);
                     var token = rabbitMQClient.Call(loginRequest);
@@ -46,8 +46,13 @@ namespace Meus_Contatos.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Lógica para registrar o usuário aqui
-                return RedirectToAction("Login");
+                using (var rabbitMQClient = new RabbitMQClient("addUser_queue"))
+                {
+                    var registerRequest = JsonConvert.SerializeObject(model);
+                    var response = rabbitMQClient.Call(registerRequest);
+
+                    return RedirectToAction("Login", "Conta");
+                }
             }
 
             return View(model);

@@ -1,11 +1,7 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Services
 {
@@ -18,18 +14,25 @@ namespace Infrastructure.Services
         private readonly IBasicProperties _props;
         private readonly BlockingCollection<string> _respQueue = new BlockingCollection<string>();
         private readonly string _correlationId;
+        private readonly string _queueName;
 
-        public RabbitMQClient()
+        public RabbitMQClient(string queueName)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
+            _queueName = queueName;
 
-            _replyQueueName = _channel.QueueDeclare(queue: "auth_queue",
+            // Declara a fila de requisições
+            _channel.QueueDeclare(queue: _queueName,
                      durable: false,
                      exclusive: false,
                      autoDelete: false,
                      arguments: null);
+
+            // Fila de resposta temporária
+            _replyQueueName = _channel.QueueDeclare().QueueName;
+
             _consumer = new EventingBasicConsumer(_channel);
             _correlationId = Guid.NewGuid().ToString();
 
@@ -47,14 +50,18 @@ namespace Infrastructure.Services
                 }
             };
 
+            // Consome da fila de resposta
             _channel.BasicConsume(consumer: _consumer, queue: _replyQueueName, autoAck: true);
         }
 
         public string Call(string message)
         {
             var messageBytes = Encoding.UTF8.GetBytes(message);
-            _channel.BasicPublish(exchange: "", routingKey: "auth_queue", basicProperties: _props, body: messageBytes);
-            return _respQueue.Take(); // Aguarda o token ser recebido
+            // Publica a mensagem de requisição
+            _channel.BasicPublish(exchange: "", routingKey: _queueName, basicProperties: _props, body: messageBytes);
+
+            // Aguarda a resposta da fila de resposta
+            return _respQueue.Take();
         }
 
         public void Dispose()

@@ -12,6 +12,17 @@ services:
     volumes:
       - sqlserverdata:/var/opt/mssql
 
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "usuariodb"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+
   meus_contatos:
     build:
       context: .
@@ -24,6 +35,19 @@ services:
     environment:
       ConnectionStrings__DefaultConnection: "Server=host.docker.internal,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
       ASPNETCORE_URLS: "http://host.docker.internal:8080"
+
+  usuariosAPI:
+    build:
+      context: ../API/UsuarioAPI/UsuariosAPI
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+      - rabbitmq
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=mysql;Database=usuariodb;User=root;Password=root;"
+      ASPNETCORE_URLS: "http://host.docker.internal:5000"
 
   prometheus:
     image: prom/prometheus:latest
@@ -50,3 +74,4 @@ services:
 
 volumes:
   sqlserverdata:
+  mysqldata:

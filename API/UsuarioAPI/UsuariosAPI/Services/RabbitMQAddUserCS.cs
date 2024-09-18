@@ -2,12 +2,12 @@
 
 namespace UsuariosAPI.Services
 {
-    public class RabbitMQConsumerService : IHostedService
+    public class RabbitMQAddUserCS : IHostedService
     {
-        private RabbitMQConsumer _consumer;
+        private RabbitMQAddUserConsumer _consumer;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public RabbitMQConsumerService(IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQAddUserCS(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
@@ -21,7 +21,7 @@ namespace UsuariosAPI.Services
                 var usuarioService = scope.ServiceProvider.GetRequiredService<UsuarioService>();
                 var serviceScopeFactory = scope.ServiceProvider.GetService<IServiceScopeFactory>();
 
-                _consumer = new RabbitMQConsumer(usuarioService,serviceScopeFactory);
+                _consumer = new RabbitMQAddUserConsumer(usuarioService, serviceScopeFactory);
                 _consumer.StartListening();
             }
 
