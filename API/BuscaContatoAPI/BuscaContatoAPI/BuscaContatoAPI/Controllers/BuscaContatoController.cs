@@ -39,7 +39,7 @@ namespace BuscaContatoAPI.Controllers
             {
                 Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
             });
-        /*
+        
         private static readonly Histogram RequestDurationExcluir = Metrics
             .CreateHistogram("request_duration_excluir", "Duração das requisições para exclusão de contatos em segundos",
              new HistogramConfiguration
@@ -47,24 +47,21 @@ namespace BuscaContatoAPI.Controllers
                  Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
              });
         private static readonly Histogram RequestDurationAdicionarContato = Metrics
-.CreateHistogram("request_duration_add", "Duração das requisições para adicionarContatos em segundos",
- new HistogramConfiguration
- {
-     Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
- });
+            .CreateHistogram("request_duration_add", "Duração das requisições para adicionarContatos em segundos",
+             new HistogramConfiguration
+             {
+                 Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
+             });
 
         private static readonly Histogram RequestDurationEditarContato = Metrics
-    .CreateHistogram("request_duration_alterar", "Duração das requisições para editarContatos em segundos",
-     new HistogramConfiguration
-     {
-         Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
-     });
-
-
-        */
+            .CreateHistogram("request_duration_alterar", "Duração das requisições para editarContatos em segundos",
+             new HistogramConfiguration
+             {
+                 Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
+             });
 
         #endregion
-        //  private BuscaService
+    
 
         #region Construtor
         public BuscaContatoController(ITelefoneRepository telefoneRepository, IContatoRepository contatoRepository, ApplicationDbContext context)
