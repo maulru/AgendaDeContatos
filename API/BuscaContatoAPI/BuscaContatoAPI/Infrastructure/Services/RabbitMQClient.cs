@@ -17,7 +17,7 @@ namespace Infrastructure.Services
 
         public RabbitMQClient()
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 

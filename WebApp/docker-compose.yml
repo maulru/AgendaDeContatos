@@ -49,6 +49,19 @@ services:
       ConnectionStrings__DefaultConnection: "Server=mysql;Database=usuariodb;User=root;Password=root;"
       ASPNETCORE_URLS: "http://host.docker.internal:5000"
 
+  buscacontatoapi:
+    build:
+      context: ../API/BuscaContatoAPI/BuscaContatoAPI/
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - sqlserver
+      - rabbitmq
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=host.docker.internal,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
+      ASPNETCORE_URLS: "http://host.docker.internal:5001"
+
   prometheus:
     image: prom/prometheus:latest
     volumes:
