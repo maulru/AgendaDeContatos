@@ -2,10 +2,13 @@
 using Core.Input;
 using Core.Repository;
 using Infrastructure.Repository;
+using Infrastructure.Services;
+using Meus_Contatos.Data.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Newtonsoft.Json;
 using Prometheus;
 
 namespace Meus_Contatos.Controllers
@@ -79,13 +82,19 @@ namespace Meus_Contatos.Controllers
                 try
                 {
 
-                    // Obtenção do DDD a partir do código fornecido
-                    var ddd = _context.DDD.FirstOrDefault(d => d.Codigo == input.NumeroDDD);
-
-                    if (ddd == null)
+                    // Obtenção do DDD
+                    RetornoDDD retornoDDD = new RetornoDDD();
+                    
+                    // Realizar validação do DDD
+                    using (var rabbitMQClient = new RabbitMQClient("verifyDDD_queue"))
                     {
-                        return Json(new { success = false, message = "DDD inválido." });
+                        var payloadMessage = input.NumeroDDD;
+                        var responseJson = rabbitMQClient.Call(payloadMessage);
+                        retornoDDD = JsonConvert.DeserializeObject<RetornoDDD>(responseJson);
                     }
+
+                    if (retornoDDD == null)
+                        return Json(new { success = false, message = "DDD inválido." });
 
                     // Criação do contato
                     var contato = new Contato()
@@ -100,7 +109,7 @@ namespace Meus_Contatos.Controllers
                     var telefone = new Telefone()
                     {
                         ContatoId = contato.Id,
-                        DDDId = ddd.Id,
+                        DDDId = retornoDDD.Id,
                         NumeroTelefone = input.NumeroTelefone
                     };
 
@@ -255,5 +264,6 @@ namespace Meus_Contatos.Controllers
         {
             return Task.FromResult(HealthCheckResult.Healthy());
         }
+
     }
 }
