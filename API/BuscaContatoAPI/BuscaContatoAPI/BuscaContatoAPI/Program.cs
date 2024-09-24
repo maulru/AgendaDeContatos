@@ -1,6 +1,8 @@
 using Core.Repository;
 using Infrastructure;
+using Infrastructure.Consumer;
 using Infrastructure.Repository;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHostedService<MetricsService>();
 
+
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
@@ -23,9 +26,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("ConnectionString"));
 }, ServiceLifetime.Scoped);
 
+builder.Services.AddScoped<BuscaService>();
+
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 
 builder.Services.AddScoped<ITelefoneRepository, TelefoneRepository>();
+
+
+builder.Services.AddHostedService<RabbitMQConsumerService>();
 
 var app = builder.Build();
 
