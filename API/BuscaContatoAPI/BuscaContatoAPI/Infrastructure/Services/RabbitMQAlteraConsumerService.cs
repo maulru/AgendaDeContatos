@@ -8,12 +8,12 @@ using Newtonsoft.Json;
 
 namespace Infrastructure
 {
-    public class RabbitMQConsumerService : IHostedService
+    public class RabbitMQAlteraConsumerService : IHostedService
     {
-        private RabbitMQConsumer _consumer;
+        private RabbitMQAlteraConsumer _consumer;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public RabbitMQConsumerService(IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQAlteraConsumerService(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
@@ -25,10 +25,10 @@ namespace Infrastructure
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 // Resolve o UsuarioService do escopo
-                var contatosService = scope.ServiceProvider.GetRequiredService<BuscaService>();
+                var alteraService = scope.ServiceProvider.GetRequiredService<AlteraService>();
                 var serviceScopeFactory = scope.ServiceProvider.GetService<IServiceScopeFactory>();
 
-                _consumer = new RabbitMQConsumer(contatosService, serviceScopeFactory);
+                _consumer = new RabbitMQAlteraConsumer(alteraService, serviceScopeFactory);
                 _consumer.StartListening();
             }
 

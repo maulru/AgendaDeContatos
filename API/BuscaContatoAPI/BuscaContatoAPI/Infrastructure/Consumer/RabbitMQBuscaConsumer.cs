@@ -10,7 +10,7 @@ using Azure;
 
 namespace Infrastructure.Consumer
 {
-    public class RabbitMQConsumer : IDisposable
+    public class RabbitMQBuscaConsumer : IDisposable
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
@@ -22,7 +22,7 @@ namespace Infrastructure.Consumer
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly BuscaService _buscaService;
 
-        public RabbitMQConsumer(BuscaService buscaService, IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQBuscaConsumer(BuscaService buscaService, IServiceScopeFactory serviceScopeFactory)
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             _connection = factory.CreateConnection();
