@@ -97,24 +97,34 @@ namespace Meus_Contatos.Controllers
                         return Json(new { success = false, message = "DDD inválido." });
 
                     // Criação do contato
-                    var contato = new Contato()
+                    var contato = new AdicionarContatoDTO()
                     {
                         Nome = input.Nome,
-                        Email = input.Email
+                        Email = input.Email,
+                        NumeroTelefone = input.NumeroTelefone,
+                        DDDId = retornoDDD.Id
                     };
 
-                    _contatoRepository.Cadastrar(contato); // Cadastro do contato
-
-                    // Criação do telefone
-                    var telefone = new Telefone()
+                    string idContatoCadastrado = string.Empty;
+                    using (var rabbitMQClient = new RabbitMQClient("addContact_queue"))
                     {
-                        ContatoId = contato.Id,
+                        var payloadMessage = JsonConvert.SerializeObject(contato);
+                        idContatoCadastrado = rabbitMQClient.Call(payloadMessage);
+                    }
+
+                    AdicionarTelefoneDTO adicionarTelefoneDTO = new AdicionarTelefoneDTO()
+                    {
+                        ContatoId = Convert.ToInt32(idContatoCadastrado),
                         DDDId = retornoDDD.Id,
                         NumeroTelefone = input.NumeroTelefone
                     };
 
-                    _telefoneRepository.Cadastrar(telefone); // Cadastro do telefone
-                    contatosAdicionados.Inc();
+                    using (var rabbitMQClient = new RabbitMQClient("addPhone_queue"))
+                    {
+                        var payloadMessage = JsonConvert.SerializeObject(adicionarTelefoneDTO);
+                        var responseJson = rabbitMQClient.Call(payloadMessage);
+                    }
+
                     return Json(new { success = true });
                 }
                 catch (Exception ex)

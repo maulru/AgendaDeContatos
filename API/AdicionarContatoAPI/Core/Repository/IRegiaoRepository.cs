@@ -2,7 +2,7 @@
 
 namespace Core.Repository
 {
-    public interface IDDDRepository : IRepository<DDD>
+    public interface IRegiaoRepository : IRepository<Regiao>
     {
     }
 }

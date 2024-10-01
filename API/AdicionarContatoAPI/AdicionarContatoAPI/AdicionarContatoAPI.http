@@ -1,0 +1,6 @@
+@AdicionarContatoAPI_HostAddress = http://localhost:5145
+
+GET {{AdicionarContatoAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
