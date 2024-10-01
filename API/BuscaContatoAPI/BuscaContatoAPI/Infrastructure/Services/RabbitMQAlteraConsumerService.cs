@@ -21,10 +21,8 @@ namespace Infrastructure
         public Task StartAsync(CancellationToken cancellationToken)
         {
 
-            // Cria um novo escopo
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                // Resolve o UsuarioService do escopo
                 var alteraService = scope.ServiceProvider.GetRequiredService<AlteraService>();
                 var serviceScopeFactory = scope.ServiceProvider.GetService<IServiceScopeFactory>();
 
@@ -37,7 +35,6 @@ namespace Infrastructure
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            // Adicione lógica de limpeza se necessário, como fechar conexões RabbitMQ
             return Task.CompletedTask;
         }
     }

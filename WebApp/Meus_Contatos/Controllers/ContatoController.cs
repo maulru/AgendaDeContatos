@@ -1,6 +1,7 @@
 ﻿using Core.Entity;
 using Core.Input;
 using Core.Repository;
+using Core.Response;
 using Infrastructure.Repository;
 using Infrastructure.Services;
 using Meus_Contatos.Data.DTO;
@@ -84,7 +85,7 @@ namespace Meus_Contatos.Controllers
 
                     // Obtenção do DDD
                     RetornoDDD retornoDDD = new RetornoDDD();
-                    
+
                     // Realizar validação do DDD
                     using (var rabbitMQClient = new RabbitMQClient("verifyDDD_queue"))
                     {
@@ -175,42 +176,30 @@ namespace Meus_Contatos.Controllers
             {
                 try
                 {
-                    var contato = _contatoRepository.ObterPorId(input.Id);
-                    if (contato == null)
+                    // Criação da mensagem para o RabbitMQ
+                    using (var rabbitMQClient = new RabbitMQClient("update_queue"))
                     {
-                        return Json(new { success = false, message = "Contato não encontrado." });
-                    }
+                        var payloadMessage = JsonConvert.SerializeObject(input);
 
-                    var ddd = _context.DDD.FirstOrDefault(d => d.Codigo == input.NumeroDDD);
-                    if (ddd == null)
-                    {
-                        return Json(new { success = false, message = "DDD inválido." });
-                    }
+                        // Envia o payload para o RabbitMQ e espera a resposta
+                        var responseJson = rabbitMQClient.Call(payloadMessage);
 
-                    contato.Nome = input.Nome;
-                    contato.Email = input.Email;
-                    _contatoRepository.Alterar(contato);
+                        // Deserializar a resposta para o formato ApiResponse<Contato>
+                        var response = JsonConvert.DeserializeObject<EncapsulatedResponse<Core.Response.Contato>>(responseJson);
 
-                    var telefone = contato.Telefones.FirstOrDefault();
-                    if (telefone != null)
-                    {
-                        telefone.DDDId = ddd.Id;
-                        telefone.NumeroTelefone = input.NumeroTelefone;
-                        _telefoneRepository.Alterar(telefone);
-                    }
-                    else
-                    {
-                        telefone = new Telefone()
+                        // Verifica se a resposta foi bem-sucedida
+                        if (response?.Value == null)
                         {
-                            ContatoId = contato.Id,
-                            DDDId = ddd.Id,
-                            NumeroTelefone = input.NumeroTelefone
-                        };
-                        _telefoneRepository.Cadastrar(telefone);
+                            errosAlterar.Inc();
+                            return Json(new { success = false, message = "Erro ao obter o contato atualizado." });
+                        }
+
+                        // Incrementa o contador de contatos alterados
+                        contatosAlterados.Inc();
+
+                        // Retorna o contato alterado (response.Data)
+                        return Json(new { success = true, data = response.Value });
                     }
-                    contatosAlterados.Inc();
-                    Thread.Sleep(1000);
-                    return Json(new { success = true });
                 }
                 catch (Exception ex)
                 {
@@ -219,6 +208,8 @@ namespace Meus_Contatos.Controllers
                 }
             }
         }
+
+
 
         /// <summary>
         /// Método para retornar contatos de acordo com o filtro de Região e/ou DDD
