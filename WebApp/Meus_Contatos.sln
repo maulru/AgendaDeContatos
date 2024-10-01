@@ -38,6 +38,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{43
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsuariosAPI", "..\API\UsuarioAPI\UsuariosAPI\UsuariosAPI.csproj", "{98E8540F-067A-4860-82AB-EDDC1AF9077A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuscaContatoAPI", "..\API\BuscaContatoAPI\BuscaContatoAPI\BuscaContatoAPI\BuscaContatoAPI.csproj", "{16D98509-E08B-4ACA-AF63-64557D9215FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{98E8540F-067A-4860-82AB-EDDC1AF9077A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98E8540F-067A-4860-82AB-EDDC1AF9077A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98E8540F-067A-4860-82AB-EDDC1AF9077A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16D98509-E08B-4ACA-AF63-64557D9215FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D98509-E08B-4ACA-AF63-64557D9215FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16D98509-E08B-4ACA-AF63-64557D9215FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16D98509-E08B-4ACA-AF63-64557D9215FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{06EA35DB-4411-4742-BB68-6E59E0941019} = {8E4DA0EC-B192-423B-8B99-A9C53D8478FD}
 		{C0A8496D-45B7-4178-A86F-8156A20AE1E1} = {8E4DA0EC-B192-423B-8B99-A9C53D8478FD}
 		{98E8540F-067A-4860-82AB-EDDC1AF9077A} = {433DF157-FD59-4A6F-B3D4-2F63C852C9FD}
+		{16D98509-E08B-4ACA-AF63-64557D9215FF} = {433DF157-FD59-4A6F-B3D4-2F63C852C9FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {10A879CB-C607-4AB5-AC47-EBFFA4E74E1F}

@@ -1,6 +1,5 @@
 using Core.Repository;
 using Infrastructure;
-using Infrastructure.Consumer;
 using Infrastructure.Repository;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHostedService<MetricsService>();
 
-
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
@@ -26,26 +24,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("ConnectionString"));
 }, ServiceLifetime.Scoped);
 
-builder.Services.AddScoped<BuscaService>();
+builder.Services.AddScoped<AlteraService>();
 
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 
 builder.Services.AddScoped<ITelefoneRepository, TelefoneRepository>();
 
-
-builder.Services.AddHostedService<RabbitMQBuscaConsumerService>();
+builder.Services.AddHostedService<RabbitMQAlteraConsumerService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

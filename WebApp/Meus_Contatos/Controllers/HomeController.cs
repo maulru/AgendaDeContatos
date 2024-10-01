@@ -1,7 +1,10 @@
 using Core.Repository;
+using Core.Response;
+using Infrastructure.Services;
 using Meus_Contatos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Prometheus;
 using System.Diagnostics;
 
@@ -40,11 +43,51 @@ namespace Meus_Contatos.Controllers
         {
             using (RequestDurationHome.NewTimer())
             {
-                var contatos = _contatoRepository.ObterTodos();
-                homeExibicoes.Inc();
-                return View(contatos);
+                using (var rabbitMQClient = new RabbitMQClient("read_queue"))
+                {
+                    var listaContatosRequest = JsonConvert.SerializeObject(new { });
+
+                    var response = rabbitMQClient.Call(listaContatosRequest);
+
+                    var contatoResponse = JsonConvert.DeserializeObject<ApiResponse<Core.Response.Contato>>(response);
+
+                    if (contatoResponse != null && contatoResponse.Value != null)
+                    {
+                        homeExibicoes.Inc();
+                        var contatosEntity = contatoResponse.Value.Select(c => new Core.Entity.Contato
+                        {
+                            Nome = c.Nome,
+                            Email = c.Email,
+                            Telefones = c.Telefones.Select(t => new Core.Entity.Telefone
+                            {
+                                ContatoId = t.ContatoId,
+                                DDDId = t.DDDId,
+                                NumeroTelefone = t.NumeroTelefone,
+                                DDD = new Core.Entity.DDD
+                                {
+                                    Id = t.DDD.Id,
+                                    Codigo = t.DDD.Codigo,
+                                    RegiaoId = t.DDD.RegiaoId,
+                                    Regiao = new Core.Entity.Regiao
+                                    {
+                                        Nome = t.DDD.Regiao.Nome,
+                                        EstadoId = t.DDD.Regiao.EstadoId
+                                    }
+                                }
+                            }).ToList(),
+                            Id = c.Id
+                        }).ToList();
+
+                        return View(contatosEntity); 
+                    }
+                    else
+                    {
+                        return View(new List<Core.Response.Contato>());
+                    }
+                }
             }
         }
+
 
 
         [Authorize]
