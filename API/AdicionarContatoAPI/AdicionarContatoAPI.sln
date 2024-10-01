@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdicionarContatoAPI", "AdicionarContatoAPI\AdicionarContatoAPI.csproj", "{2EA332ED-A453-457A-BA4A-642B5A5698F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdicionarContatoAPI", "AdicionarContatoAPI\AdicionarContatoAPI.csproj", "{2EA332ED-A453-457A-BA4A-642B5A5698F7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{739A124D-8F69-4070-8CAA-1D73766DD4AC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{E1FCBFAD-E36C-4098-9376-468919B46BBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdicionarContatoAPITests", "AdicionarContatoAPITests\AdicionarContatoAPITests.csproj", "{44EC2043-5657-4734-B07F-9F33ED254B60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{E1FCBFAD-E36C-4098-9376-468919B46BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1FCBFAD-E36C-4098-9376-468919B46BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1FCBFAD-E36C-4098-9376-468919B46BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44EC2043-5657-4734-B07F-9F33ED254B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44EC2043-5657-4734-B07F-9F33ED254B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44EC2043-5657-4734-B07F-9F33ED254B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44EC2043-5657-4734-B07F-9F33ED254B60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
