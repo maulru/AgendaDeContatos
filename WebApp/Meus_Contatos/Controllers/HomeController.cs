@@ -98,9 +98,26 @@ namespace Meus_Contatos.Controllers
             {
                 try
                 {
-                    _contatoRepository.Deletar(id);
-                    contatosExcluidos.Inc();
-                    return Json(new { success = true });
+                    using (var rabbitMQClient = new RabbitMQClient("delete_queue"))
+                    {
+
+                        var excluirContatoRequest = JsonConvert.SerializeObject(new { Id = id });
+
+                        var response = rabbitMQClient.Call(excluirContatoRequest);
+                
+                        var excluirResponse = JsonConvert.DeserializeObject<ApiResponse<bool>>(response);
+                        
+                        if (excluirResponse != null && excluirResponse.Value != null && excluirResponse.Value.Any() && excluirResponse.Value.First())
+                        {
+                            contatosExcluidos.Inc();  
+                            return Json(new { success = true });
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Falha ao excluir contato via RabbitMQ." });
+                        }
+
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -108,6 +125,7 @@ namespace Meus_Contatos.Controllers
                 }
             }
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
