@@ -89,7 +89,6 @@ namespace Meus_Contatos.Controllers
         }
 
 
-
         [Authorize]
         [HttpPost]
         public JsonResult ExcluirContato(int id)
@@ -100,23 +99,22 @@ namespace Meus_Contatos.Controllers
                 {
                     using (var rabbitMQClient = new RabbitMQClient("delete_queue"))
                     {
-
                         var excluirContatoRequest = JsonConvert.SerializeObject(new { Id = id });
 
                         var response = rabbitMQClient.Call(excluirContatoRequest);
-                
-                        var excluirResponse = JsonConvert.DeserializeObject<ApiResponse<bool>>(response);
-                        
-                        if (excluirResponse != null && excluirResponse.Value != null && excluirResponse.Value.Any() && excluirResponse.Value.First())
+
+                        // Deserializa como uma lista de ExcluirResponse
+                        var excluirResponse = JsonConvert.DeserializeObject<ApiResponse<ExcluirResponse>>(response);
+
+                        if (excluirResponse != null && excluirResponse.Value != null && excluirResponse.Value.Any() && excluirResponse.Value.First().success)
                         {
-                            contatosExcluidos.Inc();  
+                            contatosExcluidos.Inc();
                             return Json(new { success = true });
                         }
                         else
                         {
                             return Json(new { success = false, message = "Falha ao excluir contato via RabbitMQ." });
                         }
-
                     }
                 }
                 catch (Exception ex)
@@ -125,6 +123,7 @@ namespace Meus_Contatos.Controllers
                 }
             }
         }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
