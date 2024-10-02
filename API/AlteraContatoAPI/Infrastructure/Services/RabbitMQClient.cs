@@ -14,25 +14,18 @@ namespace Infrastructure.Services
         private readonly IBasicProperties _props;
         private readonly BlockingCollection<string> _respQueue = new BlockingCollection<string>();
         private readonly string _correlationId;
-        private readonly string _queueName;
 
-        public RabbitMQClient(string queueName)
+        public RabbitMQClient()
         {
             var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _queueName = queueName;
 
-            // Declara a fila de requisições
-            _channel.QueueDeclare(queue: _queueName,
+            _replyQueueName = _channel.QueueDeclare(queue: "read_queue",
                      durable: false,
                      exclusive: false,
                      autoDelete: false,
                      arguments: null);
-
-            // Fila de resposta temporária
-            _replyQueueName = _channel.QueueDeclare().QueueName;
-
             _consumer = new EventingBasicConsumer(_channel);
             _correlationId = Guid.NewGuid().ToString();
 
@@ -50,18 +43,14 @@ namespace Infrastructure.Services
                 }
             };
 
-            // Consome da fila de resposta
             _channel.BasicConsume(consumer: _consumer, queue: _replyQueueName, autoAck: true);
         }
 
         public string Call(string message)
         {
             var messageBytes = Encoding.UTF8.GetBytes(message);
-            // Publica a mensagem de requisição
-            _channel.BasicPublish(exchange: "", routingKey: _queueName, basicProperties: _props, body: messageBytes);
-
-            // Aguarda a resposta da fila de resposta
-            return _respQueue.Take();
+            _channel.BasicPublish(exchange: "", routingKey: "read_queue", basicProperties: _props, body: messageBytes);
+            return _respQueue.Take(); 
         }
 
         public void Dispose()

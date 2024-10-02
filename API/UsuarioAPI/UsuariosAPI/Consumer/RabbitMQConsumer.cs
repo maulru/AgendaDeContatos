@@ -16,7 +16,7 @@ namespace UsuariosAPI.Consumer
 
         public RabbitMQConsumer(UsuarioService cadastroService, IServiceScopeFactory serviceScopeFactory)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" }; 
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" }; 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: "auth_queue",

@@ -88,6 +88,19 @@ services:
       ConnectionStrings__DefaultConnection: "Server=host.docker.internal,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
       ASPNETCORE_URLS: "http://host.docker.internal:5003"
 
+  alterarcontatoapi:
+    build:
+      context: ../API/AlteraContatoAPI/
+      dockerfile: Dockerfile
+    ports:
+      - "5004:5004"
+    depends_on:
+      - sqlserver
+      - rabbitmq
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=host.docker.internal,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
+      ASPNETCORE_URLS: "http://host.docker.internal:5004"
+
   prometheus:
     image: prom/prometheus:latest
     volumes:
