@@ -95,7 +95,7 @@ jobs:
       - name: Executando testes unitários
         env:
           ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
-        run: dotnet test ./build/WebApp/MeusContatos_Testes/bin/Release/net8.0/MeusContatos_Testes.dll --no-build --configuration Release --logger:trx
+        run: dotnet test ./build/API/AdicionarContatoAPI/AdicionarContatoAPITests/bin/Release/net8.0/AdicionarContatoAPITests.dll --no-build --configuration Release --logger:trx
 
       - name: Publicando resultados dos testes unitários
         uses: actions/upload-artifact@v3
