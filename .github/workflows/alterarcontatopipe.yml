@@ -1,0 +1,131 @@
+name: AlterarContatoPipe
+
+on:
+  push:
+    branches: [ "main" ]
+    
+  workflow_dispatch:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Realizando o checkout do fonte
+        uses: actions/checkout@v4
+
+      - name: Instalando o SDK do .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Realizando a restauração de pacotes Nuget
+        run: dotnet restore API/AlteraContatoAPI/AlteraContatoAPI.sln
+
+      - name: Realizando o build da aplicação
+        run: dotnet build API/AlteraContatoAPI/AlteraContatoAPI.sln --no-restore --configuration Release
+
+      - name: Publicando artefatos do build
+        uses: actions/upload-artifact@v3
+        with:
+          name: BuildOutput
+          path: '**/bin/Release/**'
+
+  Testes_Unitarios_Integracao:
+    runs-on: ubuntu-latest
+    needs: Build
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          SA_PASSWORD: "M@sterk3y"
+          ACCEPT_EULA: "Y"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "exit 0" 
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 3
+
+    steps:
+      - name: Realizando o checkout do fonte
+        uses: actions/checkout@v4
+
+      - name: Instalando o SDK do .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Baixando artefatos do build
+        uses: actions/download-artifact@v3
+        with:
+          name: BuildOutput
+          path: './build'
+
+      - name: Instalando a ferramenta dotnet-ef
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Adicionando dotnet tools ao PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Instalando ferramentas de linha de comando do SQL Server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mssql-tools unixodbc-dev
+          echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+          source ~/.bashrc
+
+      - name: Esperando o SQL Server iniciar
+        run: sleep 30
+
+      - name: Aplicando a migration do Entity Framework
+        run: dotnet ef database update --project WebApp/Infrastructure --connection "Server=localhost,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
+    
+      - name: Populando o banco de dados com os estados do Brasil
+        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i WebApp/Infrastructure/Scripts/SQL/InsertEstados.sql
+
+      - name: Populando o banco de dados com as regiões do Brasil
+        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i WebApp/Infrastructure/Scripts/SQL/InsertRegioes.sql
+
+      - name: Populando o banco de dados com os DDDs
+        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "M@sterk3y" -d contatos -i WebApp/Infrastructure/Scripts/SQL/InsertDDDs.sql
+
+      - name: Executando testes unitários
+        env:
+          ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True"
+        run: dotnet test ./build/API/AlteraContatoAPI/AlteraContatoAPI.Tests/bin/Release/net8.0/AlteraContatoAPI.Tests.dll --no-build --configuration Release --logger:trx
+
+      - name: Publicando resultados dos testes unitários
+        uses: actions/upload-artifact@v3
+        with:
+          name: TestResults
+          path: '**/*.trx'
+
+  Build_Docker:
+    runs-on: ubuntu-latest
+    needs: Testes_Unitarios_Integracao
+    
+    steps:
+      - name: Realizando o checkout do fonte
+        uses: actions/checkout@v4
+
+      - name: Inicializando o buildx do Docker
+        uses: docker/setup-buildx-action@v1
+        
+      - name: Realizando o login no docker
+        uses: docker/login-action@v3.2.0
+        with:
+          username: 'trickfx'
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Realizando o build e publicação da imagem
+        uses: docker/build-push-action@v6.2.0
+        with:
+          context: API/AlteraContatoAPI
+          tags: trickfx/alterarcontatoapi:latest
+          push: true          
+
+      - name: Finalizando a sessão do docker
+        run: docker logout
