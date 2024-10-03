@@ -102,3 +102,30 @@ jobs:
         with:
           name: TestResults
           path: '**/*.trx'
+
+  Build_Docker:
+    runs-on: ubuntu-latest
+    needs: Build
+    
+    steps:
+      - name: Realizando o checkout do fonte
+        uses: actions/checkout@v4
+
+      - name: Inicializando o buildx do Docker
+        uses: docker/setup-buildx-action@v1
+        
+      - name: Realizando o login no docker
+        uses: docker/login-action@v3.2.0
+        with:
+          username: 'trickfx'
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Realizando o build e publicação da imagem
+        uses: docker/build-push-action@v6.2.0
+        with:
+          context: WebApp/
+          tags: trickfx/adicionarcontatoapi:latest
+          push: true          
+
+      - name: Finalizando a sessão do docker
+        run: docker logout
