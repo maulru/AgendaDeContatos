@@ -27,7 +27,8 @@ jobs:
 
   Build_Docker:
     runs-on: ubuntu-latest
-
+    needs: Build
+    
     steps:
       - name: Realizando o checkout do fonte
         uses: actions/checkout@v4
