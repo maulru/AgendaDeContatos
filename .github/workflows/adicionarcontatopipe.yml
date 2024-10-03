@@ -123,7 +123,7 @@ jobs:
       - name: Realizando o build e publicação da imagem
         uses: docker/build-push-action@v6.2.0
         with:
-          context: WebApp/
+          context: API/AdicionarContatoAPI
           tags: trickfx/adicionarcontatoapi:latest
           push: true          
 
