@@ -44,7 +44,7 @@ jobs:
       - name: Realizando o build e publicação da imagem
         uses: docker/build-push-action@v6.2.0
         with:
-          context: .
+          context: WebApp/Meus_Contatos
           tags: trickfx/meus-contatos:latest
           push: true          
 
