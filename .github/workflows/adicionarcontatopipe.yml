@@ -65,7 +65,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: BuildOutput
-          path: './build'
 
       - name: Instalando a ferramenta dotnet-ef
         run: dotnet tool install --global dotnet-ef
