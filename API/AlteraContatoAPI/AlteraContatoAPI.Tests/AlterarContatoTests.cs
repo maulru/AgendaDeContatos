@@ -17,7 +17,7 @@ namespace AlterarContatoTests
         private DbContextOptions<ApplicationDbContext> GetSqlServerDbContextOptions()
         {
             return new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlServer("server=host.docker.internal,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True")
+                .UseSqlServer("Server=localhost,1433;Database=contatos;User id=sa;Password=M@sterk3y;TrustServerCertificate=True")
                 .Options;
         }
         [Fact]
