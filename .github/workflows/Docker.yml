@@ -42,9 +42,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Realizando o build e publicação da imagem
-        run: |
-          docker-compose -f docker-compose.yml build
-          docker-compose -f docker-compose.yml push
+        uses: docker/build-push-action@v6.2.0
+        with:
+          context: .
+          tags: trickfx/meus-contatos:latest
+          push: true          
 
       - name: Finalizando a sessão do docker
         run: docker logout
