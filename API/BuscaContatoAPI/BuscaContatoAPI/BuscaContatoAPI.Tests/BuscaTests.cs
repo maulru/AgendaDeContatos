@@ -19,7 +19,7 @@ namespace BuscaContatoAPI.Tests
                 .Options;
         }
         [Fact]
-        public async Task BuscaContato_DeveBuscarContato_QuandoNaoPàssadoFiltro()
+        public async Task BuscaContato_DeveBuscarContato_QuandoNaoPassadoFiltro()
         {
             var options = GetSqlServerDbContextOptions();
             using var context = new ApplicationDbContext(options, _IconnectionString);
@@ -28,13 +28,13 @@ namespace BuscaContatoAPI.Tests
             List<Contato> contatosFake = new List<Contato>()
             {
                 new Contato {
-                    Id = 1, 
-                    Nome = "Antonio Kauã", 
+                    Id = 1,
+                    Nome = "Antonio Kauã",
                     Email = "kauabatista545@hotmail.com",
                     Telefones = new List<Telefone> {
                         new Telefone {
                             ContatoId = 1,
-                            NumeroTelefone = "989286488" 
+                            NumeroTelefone = "989286488"
                         } }
                 }
             };
