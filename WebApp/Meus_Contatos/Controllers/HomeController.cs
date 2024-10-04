@@ -104,9 +104,9 @@ namespace Meus_Contatos.Controllers
                         var response = rabbitMQClient.Call(excluirContatoRequest);
 
                         // Deserializa como uma lista de ExcluirResponse
-                        var excluirResponse = JsonConvert.DeserializeObject<ApiResponse<ExcluirResponse>>(response);
+                        var excluirResponse = JsonConvert.DeserializeObject<JsonResultData>(response);
 
-                        if (excluirResponse != null && excluirResponse.Value != null && excluirResponse.Value.Any() && excluirResponse.Value.First().success)
+                        if (excluirResponse != null && excluirResponse.Value != null && excluirResponse.Value.Success)
                         {
                             contatosExcluidos.Inc();
                             return Json(new { success = true });

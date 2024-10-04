@@ -21,6 +21,19 @@ namespace Core.Response
 
     }
 
+    public class JsonResultData
+    {
+        public object ContentType { get; set; }
+        public object SerializerSettings { get; set; }
+        public object StatusCode { get; set; }
+        public ValueData Value { get; set; }
+    }
+
+    public class ValueData
+    {
+        public bool Success { get; set; }
+    }
+
     public class Contato
     {
         public string Nome { get; set; }
