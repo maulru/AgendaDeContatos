@@ -2,16 +2,27 @@
 using Core.Entity;
 using Core.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Prometheus;
 
 namespace AdicionarContatoAPI.Controllers
 {
     [ApiController]
     [Route("/[controller]")]
-    public class AdicionarContatoController : ControllerBase
+    public class AdicionarContatoController : ControllerBase, IHealthCheck
     {
         #region Propriedades
         private readonly IContatoRepository _contatoRepository;
         private readonly ITelefoneRepository _telefoneRepository;
+        private Counter contatosAdicionados = Metrics.CreateCounter("contatos_adicionados", "Contatos Adicionados");
+        private Counter errosAdicionar = Metrics.CreateCounter("erros_adicionar_contato", "Erros ao adicionar contato");
+
+        private static readonly Histogram RequestDurationAdicionarContato = Metrics
+        .CreateHistogram("request_duration_add", "Duração das requisições para adicionarContatos em segundos",
+        new HistogramConfiguration
+        {
+            Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
+        });
         #endregion
 
         #region Construtores
@@ -44,10 +55,12 @@ namespace AdicionarContatoAPI.Controllers
 
                 AdicionarTelefone(adicionarTelefoneDTO);
 
+                contatosAdicionados.Inc();
                 return Ok(model);
             }
             catch (Exception)
             {
+                errosAdicionar.Inc();
                 return BadRequest();
                 throw;
             }
@@ -73,6 +86,11 @@ namespace AdicionarContatoAPI.Controllers
                 return BadRequest();
                 throw;
             }
+        }
+
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

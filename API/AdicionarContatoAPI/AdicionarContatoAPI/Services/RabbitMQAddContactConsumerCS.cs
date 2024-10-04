@@ -1,5 +1,6 @@
 ﻿using AdicionarContatoAPI.Consumer;
 using Core.Repository;
+using Prometheus;
 
 namespace AdicionarContatoAPI.Services
 {
@@ -9,6 +10,7 @@ namespace AdicionarContatoAPI.Services
         private RabbitMQAddContactConsumer _consumer;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private IServiceScope _scope;
+
         #endregion
 
         #region Construtores

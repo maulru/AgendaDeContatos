@@ -2,6 +2,7 @@
 using Core.Entity;
 using Core.Repository;
 using Newtonsoft.Json;
+using Prometheus;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -17,6 +18,15 @@ namespace AdicionarContatoAPI.Consumer
         private readonly ITelefoneRepository _telefoneRepository;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private const string queueName = "addContact_queue";
+        private Counter contatosAdicionados = Metrics.CreateCounter("contatos_adicionados", "Contatos Adicionados");
+        private Counter errosAdicionar = Metrics.CreateCounter("erros_adicionar_contato", "Erros ao adicionar contato");
+
+        private static readonly Histogram RequestDurationAdicionarContato = Metrics
+        .CreateHistogram("request_duration_add", "Duração das requisições para adicionarContatos em segundos",
+        new HistogramConfiguration
+        {
+            Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
+        });
         #endregion
 
         #region Construtores
@@ -56,30 +66,33 @@ namespace AdicionarContatoAPI.Consumer
 
         private async Task HandleMessage(AdicionarContatoDTO model, BasicDeliverEventArgs ea)
         {
-            try
+            using (RequestDurationAdicionarContato.NewTimer())
             {
-                Contato contato = new Contato()
+                try
                 {
-                    Nome = model.Nome,
-                    Email = model.Email
-                };
-                var contatoCadastrado = await _contatoRepository.Cadastrar(contato);
-                var responseBytes = Encoding.UTF8.GetBytes(contatoCadastrado.Id.ToString());
+                    Contato contato = new Contato()
+                    {
+                        Nome = model.Nome,
+                        Email = model.Email
+                    };
+                    var contatoCadastrado = await _contatoRepository.Cadastrar(contato);
+                    var responseBytes = Encoding.UTF8.GetBytes(contatoCadastrado.Id.ToString());
 
-                var replyProps = _channel.CreateBasicProperties();
-                replyProps.CorrelationId = ea.BasicProperties.CorrelationId;
+                    var replyProps = _channel.CreateBasicProperties();
+                    replyProps.CorrelationId = ea.BasicProperties.CorrelationId;
 
-                _channel.BasicPublish(exchange: "",
-                                      routingKey: ea.BasicProperties.ReplyTo,
-                                      basicProperties: replyProps,
-                                      body: responseBytes);
+                    _channel.BasicPublish(exchange: "",
+                                          routingKey: ea.BasicProperties.ReplyTo,
+                                          basicProperties: replyProps,
+                                          body: responseBytes);
+                    contatosAdicionados.Inc();
+                }
+                catch (Exception)
+                {
+                    errosAdicionar.Inc();
+                    throw;
+                }
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
         }
 
         #endregion

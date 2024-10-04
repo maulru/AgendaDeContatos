@@ -16,14 +16,11 @@ namespace Infrastructure.Services
         private readonly IContatoRepository _contatoRepository;
         private readonly ITelefoneRepository _telefoneRepository;
         private readonly ApplicationDbContext _context;
-        private Counter contatosAdicionados = Metrics.CreateCounter("contatos_adicionados", "Contatos Adicionados");
-        private Counter contatosAlterados = Metrics.CreateCounter("contatos_alterados", "Contatos Alterados");
-        private Counter buscasComFiltro = Metrics.CreateCounter("buscas_filtro", "Buscas com Filtro");
-        private Counter errosAdicionar = Metrics.CreateCounter("erros_adicionar_contato", "Erros ao adicionar contato");
-        private Counter errosAlterar = Metrics.CreateCounter("erros_alterar_contato", "Erros ao alterar contato");
+        private Counter contatosExcluidos = Metrics.CreateCounter("contatos_excluidos", "Contatos Excluidos");
+        private Counter errosExcluir = Metrics.CreateCounter("erros_excluir_contato", "Erros ao excluir contato");
 
                 private static readonly Histogram RequestDurationExcluir = Metrics
-           .CreateHistogram("request_duration_add", "Duração das requisições para adicionarContatos em segundos",
+           .CreateHistogram("request_duration_excluir", "Duração das requisições para excluirContatos em segundos",
             new HistogramConfiguration
             {
                 Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
@@ -46,11 +43,12 @@ namespace Infrastructure.Services
                 try
                 {
                     _contatoRepository.Deletar(contatoInput.Id);
-
+                    contatosExcluidos.Inc();
                     return Json(new { success = true });
                 }
                 catch (Exception ex)
                 {
+                    errosExcluir.Inc();
                     return Json(new { success = false, message = ex.Message });
                 }
             }

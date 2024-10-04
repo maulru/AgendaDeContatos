@@ -2,10 +2,11 @@
 using Prometheus;
 using Core.Repository;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace ExcluiContatoAPI.Controllers
 {
-    public class ExcluiContatoController : Controller
+    public class ExcluiContatoController : Controller, IHealthCheck
     {
 
         #region Propriedades
@@ -52,5 +53,9 @@ namespace ExcluiContatoAPI.Controllers
             }
         }
 
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
