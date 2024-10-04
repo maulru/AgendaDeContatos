@@ -1,0 +1,26 @@
+name: UsuarioAPI
+
+on:
+  push:
+    branches: [ "main" ]
+    
+  workflow_dispatch:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Realizando o checkout do fonte
+        uses: actions/checkout@v4
+
+      - name: Instalando o SDK do .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Realizando a restauração de pacotes Nuget
+        run: dotnet restore API/UsuarioAPI/UsuariosAPI.sln
+
+      - name: Realizando o build da aplicação
+        run: dotnet build API/UsuarioAPI/UsuariosAPI.sln --no-restore --configuration Release
