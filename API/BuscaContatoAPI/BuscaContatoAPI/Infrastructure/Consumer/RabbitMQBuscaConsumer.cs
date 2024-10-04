@@ -24,7 +24,7 @@ namespace Infrastructure.Consumer
 
         public RabbitMQBuscaConsumer(BuscaService buscaService, IServiceScopeFactory serviceScopeFactory)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: "read_queue",
