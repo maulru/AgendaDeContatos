@@ -22,7 +22,7 @@ namespace UsuariosAPI
             {
                 var factory = new ConnectionFactory()
                 {
-                    HostName = "localhost",
+                    HostName = "rabbitmq-service",
                     UserName = "guest",
                     Password = "guest",
                 };
