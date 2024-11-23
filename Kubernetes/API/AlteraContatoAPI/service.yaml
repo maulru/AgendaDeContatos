@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: excluicontatoapi-service
+  name: alteracontatoapi-service
 spec:
   type: ClusterIP
   selector:
-    app: excluicontatoapi
+    app: alteracontatoapi
   ports:
   - port: 80
-    targetPort: 5005
+    targetPort: 5004

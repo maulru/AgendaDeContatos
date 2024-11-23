@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alteracontatoapi-deployment
+  labels:
+    app: alteracontatoapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: alteracontatoapi
+  template:
+    metadata:
+      labels:
+        app: alteracontatoapi
+    spec:
+      containers:
+      - name: alteracontatoapi
+        image: trickfx/alterarcontatoapi:latest
+        ports:
+        - containerPort: 80
