@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: adicionarcontatoapi-service
+spec:
+  type: ClusterIP
+  selector:
+    app: adicionarcontatoapi
+  ports:
+  - port: 80
+    targetPort: 5003

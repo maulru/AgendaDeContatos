@@ -23,7 +23,7 @@ namespace AdicionarContatoAPI.Consumer
         public RabbitMQAddPhoneConsumer(IContatoRepository contatoRepository, ITelefoneRepository telefoneRepository,
             IServiceScopeFactory serviceScopeFactory)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmq-service" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: queueName,

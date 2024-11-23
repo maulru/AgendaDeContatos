@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adicionarcontatoapi-deployment
+  labels:
+    app: adicionarcontatoapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: adicionarcontatoapi
+  template:
+    metadata:
+      labels:
+        app: adicionarcontatoapi
+    spec:
+      containers:
+      - name: adicionarcontatoapi
+        image: trickfx/adicionarcontatoapi:latest
+        ports:
+        - containerPort: 80
