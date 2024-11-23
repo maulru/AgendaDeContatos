@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: excluicontatoapi-deployment
+  labels:
+    app: excluicontatoapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: excluicontatoapi
+  template:
+    metadata:
+      labels:
+        app: excluicontatoapi
+    spec:
+      containers:
+      - name: excluicontatoapi
+        image: trickfx/excluircontatoapi:latest
+        ports:
+        - containerPort: 80

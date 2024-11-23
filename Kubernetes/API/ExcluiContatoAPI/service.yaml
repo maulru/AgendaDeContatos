@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: buscadddapi-service
+  name: excluicontatoapi-service
 spec:
   type: ClusterIP
   selector:
-    app: buscadddapi
+    app: excluicontatoapi
   ports:
   - port: 80
     targetPort: 5002
