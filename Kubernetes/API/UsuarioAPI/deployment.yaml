@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usuario-deployment
+  labels:
+    app: usuario
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: usuario
+  template:
+    metadata:
+      labels:
+        app: usuario
+    spec:
+      containers:
+      - name: usuario
+        image: trickfx/usuarioapi:latest # Imagem Docker da API UsuarioAPI
+        ports:
+        - containerPort: 80
