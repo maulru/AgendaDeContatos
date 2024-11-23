@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buscadddapi-deployment
+  labels:
+    app: buscadddapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: buscadddapi
+  template:
+    metadata:
+      labels:
+        app: buscadddapi
+    spec:
+      containers:
+      - name: buscadddapi
+        image: trickfx/buscadddapi:latest
+        ports:
+        - containerPort: 80

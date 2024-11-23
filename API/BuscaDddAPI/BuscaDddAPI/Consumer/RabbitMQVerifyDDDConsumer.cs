@@ -17,7 +17,7 @@ public class RabbitMQVerifyDDDConsumer : IDisposable
     #region Construtores
     public RabbitMQVerifyDDDConsumer(IDDDRepository dddRepository, IServiceScopeFactory serviceScopeFactory)
     {
-        var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+        var factory = new ConnectionFactory() { HostName = "rabbitmq-service" };
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
         _channel.QueueDeclare(queue: queueName,
