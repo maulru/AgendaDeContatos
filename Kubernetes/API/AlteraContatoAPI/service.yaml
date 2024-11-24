@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: alteracontatoapi-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: alteracontatoapi
   ports:
   - port: 80
     targetPort: 5004
+    nodePort: 30082 # Porta externa para acesso

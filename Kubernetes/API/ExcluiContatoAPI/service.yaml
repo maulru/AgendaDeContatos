@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: excluicontatoapi-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: excluicontatoapi
   ports:
   - port: 80
     targetPort: 5005
+    nodePort: 30085 # Porta externa para acesso

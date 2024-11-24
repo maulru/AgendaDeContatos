@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: buscadddapi-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: buscadddapi
   ports:
   - port: 80
     targetPort: 5002
+    nodePort: 30084 # Porta externa para acesso

@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: usuario-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: usuario
   ports:
   - port: 80
-    targetPort: 5000
+    targetPort: 80
+    nodePort: 30086 # Porta externa para acesso

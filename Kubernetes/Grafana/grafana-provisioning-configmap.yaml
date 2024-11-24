@@ -4,14 +4,24 @@ metadata:
   name: grafana-provisioning-config
 data:
   datasources.yaml: |
-    # Coloque o conteúdo do arquivo `datasources.yaml` aqui
     apiVersion: 1
-
     datasources:
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: grafana-service:30300
+        url: prometheus-service
         isDefault: true
         editable: true
         uid: adt2ajoxutb7kd
+
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: "Default"
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards

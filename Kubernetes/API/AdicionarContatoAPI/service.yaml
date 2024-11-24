@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: adicionarcontatoapi-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: adicionarcontatoapi
   ports:
   - port: 80
     targetPort: 5003
+    nodePort: 30081 # Porta externa para acesso

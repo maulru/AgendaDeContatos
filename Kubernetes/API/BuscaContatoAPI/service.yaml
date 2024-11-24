@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: buscacontatoapi-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: buscacontatoapi
   ports:
   - port: 80
     targetPort: 5001
+    nodePort: 30083 # Porta externa para acesso
