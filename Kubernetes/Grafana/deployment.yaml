@@ -20,14 +20,14 @@ spec:
         ports:
         - containerPort: 3000
         volumeMounts:
-        - name: grafana-provisioning
+        - name: provisioning-volume
           mountPath: /etc/grafana/provisioning
-        - name: grafana-dashboards
+        - name: dashboards-volume
           mountPath: /var/lib/grafana/dashboards
       volumes:
-      - name: grafana-provisioning
-        hostPath:
-          path: /path/to/grafana/provisioning # Substitua com o caminho correto no cluster
-      - name: grafana-dashboards
-        hostPath:
-          path: /path/to/grafana/dashboards # Substitua com o caminho correto no cluster
+      - name: provisioning-volume
+        configMap:
+          name: grafana-provisioning-config
+      - name: dashboards-volume
+        configMap:
+          name: grafana-dashboards-config
