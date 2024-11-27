@@ -8,5 +8,5 @@ spec:
     app: buscadddapi
   ports:
   - port: 80
-    targetPort: 5002
+    targetPort: 8080
     nodePort: 30084 # Porta externa para acesso

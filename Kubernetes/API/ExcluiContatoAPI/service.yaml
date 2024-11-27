@@ -8,5 +8,5 @@ spec:
     app: excluicontatoapi
   ports:
   - port: 80
-    targetPort: 5005
+    targetPort: 8080
     nodePort: 30085 # Porta externa para acesso

@@ -18,4 +18,4 @@ spec:
       - name: alteracontatoapi
         image: trickfx/alterarcontatoapi:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8080

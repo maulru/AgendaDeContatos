@@ -8,5 +8,5 @@ spec:
     app: adicionarcontatoapi
   ports:
   - port: 80
-    targetPort: 5003
+    targetPort: 8080
     nodePort: 30081 # Porta externa para acesso
