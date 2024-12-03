@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: trickfx/meus-contatos:latest # Substitua pela sua imagem Docker
+        image: trickfx/meus-contatos:latest
         ports:
         - containerPort: 80
